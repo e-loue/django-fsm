@@ -21,7 +21,7 @@ Usage
 -----
 
 Add FSMState field to you model
-    from django_fsm.db.fields import FSMField, transition
+    from fsm.fields import FSMField
 
     class BlogPost(models.Model):
         state = FSMField(default='new')
@@ -29,11 +29,12 @@ Add FSMState field to you model
 
 Use transition decorator to annotate model methods
 
+    from fsm import transition
+    
     @transition(source='new', target='published')
     def publish(self):
-            """
-            Some additional code goes here
-            """
+        """Some additional code goes here"""
+
 
 `source` parameter accepts a list of states, or an individual state.
 You can use '*' for source, to allow the switching to target from any state
@@ -41,7 +42,7 @@ You can use '*' for source, to allow the switching to target from any state
 
 Succeed call of the publish() method will change the state field
 
-    from django_fsm.db.fields import can_proceed
+    from django_fsm import can_proceed
     def publish_view(request, post_id):
         post = get_object__or_404(BlogPost, pk=post_id)
         if not can_proceed(post.publish):

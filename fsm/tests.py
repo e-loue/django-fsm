@@ -1,11 +1,10 @@
 #-*- coding: utf-8 -*-
-# pylint: disable=C0111, C0103, R0904
-
 from django.test import TestCase
 from django.db import models
 
-from django_fsm.db.fields import FSMField, FSMKeyField, \
-    transition, can_proceed
+from fsm.fields import FSMField, FSMKeyField
+from fsm.utils import transition, can_proceed
+
 
 class BlogPost(models.Model):
     state = FSMField(default='new')
@@ -22,7 +21,7 @@ class BlogPost(models.Model):
     def remove(self):
         raise Exception('No rights to delete %s' % self)
 
-    @transition(source=['published','hidden'], target='stolen')
+    @transition(source=['published', 'hidden'], target='stolen')
     def steal(self):
         pass
 
@@ -118,7 +117,7 @@ class BlogPostWithFKState(models.Model):
     @transition(source='new', target='published')
     def publish(self):
         pass
- 
+
     @transition(source='published', target='hidden', save=True)
     def hide(self):
         pass
@@ -140,4 +139,3 @@ class BlogPostWithFKStateTest(TestCase):
 
     def test_unknow_transition_fails(self):
         self.assertRaises(NotImplementedError, self.model.hide)
-
