@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
+from fsm.exceptions import TransitionNotAllowed
 from fsm.models import FSMMeta
 
 
@@ -18,7 +19,7 @@ def transition(source='*', target=None, save=False):
         def _change_state(instance, *args, **kwargs):
             meta = func._django_fsm
             if not meta.has_transition(instance):
-                raise NotImplementedError("Can't switch from state '%s' using method '%s'" % (FSMMeta.current_state(instance), func.func_name))
+                raise TransitionNotAllowed("Can't switch from state '%s' using method '%s'" % (FSMMeta.current_state(instance), func.func_name))
             func(instance, *args, **kwargs)
             meta.to_next_state(instance)
             if save:

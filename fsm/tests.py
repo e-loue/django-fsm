@@ -2,6 +2,7 @@
 from django.test import TestCase
 from django.db import models
 
+from fsm.exceptions import TransitionNotAllowed
 from fsm.fields import FSMField, FSMKeyField
 from fsm.utils import transition, can_proceed
 
@@ -48,7 +49,7 @@ class FSMFieldTest(TestCase):
 
     def test_unknow_transition_fails(self):
         self.assertFalse(can_proceed(self.model.hide))
-        self.assertRaises(NotImplementedError, self.model.hide)
+        self.assertRaises(TransitionNotAllowed, self.model.hide)
 
     def test_state_non_changed_after_fail(self):
         self.assertTrue(can_proceed(self.model.remove))
@@ -138,4 +139,4 @@ class BlogPostWithFKStateTest(TestCase):
         self.assertEqual(self.model.state, 'hidden')
 
     def test_unknow_transition_fails(self):
-        self.assertRaises(NotImplementedError, self.model.hide)
+        self.assertRaises(TransitionNotAllowed, self.model.hide)
