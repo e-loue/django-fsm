@@ -7,6 +7,7 @@ class FSMMeta(object):
     """Models methods transitions meta information"""
     def __init__(self):
         self.transitions = defaultdict()
+        self.conditions  = defaultdict()
 
     @staticmethod
     def _get_state_field(instance):
@@ -27,9 +28,15 @@ class FSMMeta(object):
         return getattr(instance, field_name)
 
     def has_transition(self, instance):
-        """Lookup is any transition exists from current model state"""
+        """Lookup if any transition exists from current model state"""
         return FSMMeta.current_state(instance) in self.transitions or '*' in self.transitions
 
+    def conditions_met(self, instance):
+        """Check if all conditions has been met"""
+        current_state = FSMMeta.current_state(instance)
+        next = self.transitions.has_key(current_state) and self.transitions[current_state] or self.transitions['*']
+        return all(map(lambda f: f(instance), self.conditions[next]))
+    
     def to_next_state(self, instance):
         """Switch to next state"""
         field_name = FSMMeta._get_state_field(instance).name
