@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-fsm',
-    version='1.0.0',
+    version='1.1.0',
     description='Django friendly finite state machine support.',
     author='Mikhail Podgurskiy',
     author_email='kmmbvnr@gmail.com',
